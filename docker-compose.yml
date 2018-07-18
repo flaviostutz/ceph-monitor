@@ -1,0 +1,21 @@
+version: '3.5'
+
+services:
+
+  mon1:
+    build: .
+    environment:
+      - LOG_LEVEL=10
+
+  mon2:
+    build: .
+    environment:
+      - LOG_LEVEL=10
+      - JOIN_MONITOR_HOST=mon1
+
+  mon3:
+    build: .
+    environment:
+      - LOG_LEVEL=10
+      - JOIN_MONITOR_HOST=mon2
+
