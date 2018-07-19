@@ -4,6 +4,8 @@ services:
 
   mon1:
     build: .
+    ports:
+      - 6789:6789
     environment:
       - LOG_LEVEL=10
 
@@ -11,11 +13,11 @@ services:
     build: .
     environment:
       - LOG_LEVEL=10
-      - JOIN_MONITOR_HOST=mon1
+      - PEER_MONITOR_HOST=mon1
 
   mon3:
     build: .
     environment:
       - LOG_LEVEL=10
-      - JOIN_MONITOR_HOST=mon2
+      - PEER_MONITOR_HOST=mon2
 

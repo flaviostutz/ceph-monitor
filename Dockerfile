@@ -1,8 +1,7 @@
-# FROM flaviostutz/ceph-base:latest
-FROM cd319cebcf35
+FROM flaviostutz/ceph-base:latest
 
 ENV CLUSTER_NAME 'ceph'
-ENV JOIN_MONITOR_HOST ''
+ENV PEER_MONITOR_HOST ''
 ENV FS_ID ''
 ENV MONITOR_NAME ''
 ENV MONITOR_HOST ''
@@ -18,7 +17,6 @@ ENV LOG_LEVEL 3
 ADD startup.sh /
 ADD startup-bootstrap.sh /
 ADD startup-join.sh /
-ADD startup.sh /
 ADD ceph-bootstrap.conf.template /
 ADD ceph-join.conf.template /
 

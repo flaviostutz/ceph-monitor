@@ -8,7 +8,7 @@ if [ "$CLUSTER_NAME" == "" ]; then
     exit 1
 fi
 
-if [ "$JOIN_MONITOR_HOST" == "" ]; then
+if [ "$PEER_MONITOR_HOST" == "" ]; then
     ./startup-bootstrap.sh
 
 else
