@@ -17,7 +17,7 @@ if [ "$MONITOR_HOST" == "" ]; then
 fi
 
 if [ "$MONITOR_IP" == "" ]; then
-    export MONITOR_IP=$(ip route get 8.8.8.8 | awk '{print $NF; exit}')
+    export MONITOR_IP=$(ip route get 8.8.8.8 | grep -oE 'src ([0-9\.]+)' | cut -d ' ' -f 2)
 fi
 
 if [ "$MONITOR_PORT" == "" ]; then

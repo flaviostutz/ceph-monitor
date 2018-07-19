@@ -1,5 +1,5 @@
 [global]
-mon host = ${JOIN_MONITOR_HOST}
+mon host = ${PEER_MONITOR_HOST}
 mon data = /var/lib/ceph/mon/${CLUSTER_NAME}-${MONITOR_NAME}
 # public network = {network}[, {network}]
 # cluster network = {network}[, {network}]

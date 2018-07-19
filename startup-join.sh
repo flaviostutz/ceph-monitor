@@ -17,7 +17,7 @@ if [ "$MONITOR_HOST" == "" ]; then
 fi
 
 if [ "$MONITOR_IP" == "" ]; then
-    export MONITOR_IP=$(ip route get 8.8.8.8 | awk '{print $NF; exit}')
+    export MONITOR_IP=$(ip route get 8.8.8.8 | grep -oE 'src ([0-9\.]+)' | cut -d ' ' -f 2)
 fi
 
 if [ "$MONITOR_PORT" == "" ]; then
@@ -34,7 +34,7 @@ if [ ! -f /initialized ]; then
     echo "Retrieving CRUSH map..."
     while true; do
         ceph mon getmap -o /tmp/monmap && break
-        echo "Retrying to connect to peer monitor ${JOIN_MONITOR_HOST} in 1 second..."
+        echo "Retrying to connect to peer monitor ${PEER_MONITOR_HOST} in 1 second..."
         sleep 1
     done
     
@@ -47,6 +47,6 @@ else
 fi
 
 echo ""
-echo "Starting Ceph Monitor $CLUSTER_NAME-$MONITOR_NAME by retrieving data from another monitor at ${JOIN_MONITOR_HOST}..."
+echo "Starting Ceph Monitor $CLUSTER_NAME-$MONITOR_NAME by retrieving data from another monitor at ${PEER_MONITOR_HOST}..."
 ceph-mon -d --public_addr ${MONITOR_IP}:${MONITOR_PORT} --debug_mon $LOG_LEVEL --id=$MONITOR_NAME --cluster=$CLUSTER_NAME
 
