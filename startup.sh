@@ -2,7 +2,6 @@
 set -e
 # set -x
 
-echo "Defining default values for ENVs..."
 if [ "$CLUSTER_NAME" == "" ]; then
     echo "CLUSTER_NAME cannot be empty"
     exit 1

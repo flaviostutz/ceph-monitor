@@ -1,15 +1,9 @@
 [global]
-fsid = ${FS_ID}
 mon host = ${MONITOR_HOST}
-mon data = /var/lib/ceph/mon/${CLUSTER_NAME}-${MONITOR_NAME}
 # public network = {network}[, {network}]
 # cluster network = {network}[, {network}]
-auth cluster required = none
-auth service required = none
-auth client required = none
-osd journal size = ${OSD_JOURNAL_SIZE}
-osd pool default size = ${OSD_POOL_DEFAULT_SIZE}  # Write an object n times.
-osd pool default min size = ${OSD_POOL_DEFAULT_MIN_SIZE} # Allow writing n copies in a degraded state.
-osd pool default pg num = ${OSD_POOL_DEFAULT_PG_NUM}
-osd crush chooseleaf type = ${OSD_CRUSH_CHOOSELEAF_TYPE}
+auth cluster required = cephx
+auth service required = cephx
+auth client required = cephx
+
 
