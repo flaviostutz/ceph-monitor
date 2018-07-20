@@ -11,11 +11,6 @@ services:
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd0:2379
 
-  mon-single:
-    build: .
-    environment:
-      - LOG_LEVEL=0
-
   mon1:
     build: .
     ports:
@@ -23,6 +18,8 @@ services:
     environment:
       - LOG_LEVEL=0
       - ETCD_URL=http://etcd0:2379
+    volumes:
+      - mon1:/var/lib/ceph/mon
 
   mon2:
     build: .
@@ -30,6 +27,8 @@ services:
       - LOG_LEVEL=0
       - PEER_MONITOR_HOST=mon1
       - ETCD_URL=http://etcd0:2379
+    volumes:
+      - mon1:/var/lib/ceph/mon
 
   mon3:
     build: .
@@ -37,6 +36,11 @@ services:
       - LOG_LEVEL=0
       - PEER_MONITOR_HOST=mon2
       - ETCD_URL=http://etcd0:2379
+    volumes:
+      - mon1:/var/lib/ceph/mon
 
 volumes:
   etcd0:
+  mon1:
+  mon2:
+  mon3:
