@@ -11,7 +11,7 @@ version: '3.5'
 services:
 
   mon1:
-    image: flaviostutz/ceph-monitor:latest
+    image: flaviostutz/ceph-monitor
     environment:
         - LOG_LEVEL=5
 
@@ -24,22 +24,39 @@ version: '3.5'
 
 services:
 
-  mon1:
-    image: flaviostutz/ceph-monitor:latest
+  #etcd is used only to exchange client.admin key between monitor instances
+  etcd0:
+    image: quay.io/coreos/etcd
+    volumes:
+      - etcd0:/etcd_data
     environment:
-      - LOG_LEVEL=10
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd0:2379
+
+  mon1:
+    build: flaviostutz/ceph-monitor
+    ports:
+      - 6789:6789
+    environment:
+      - LOG_LEVEL=0
+      - ETCD_URL=http://etcd0:2379
 
   mon2:
-    image: flaviostutz/ceph-monitor:latest
+    build: flaviostutz/ceph-monitor
     environment:
-      - LOG_LEVEL=10
-      - JOIN_MONITOR_HOST=mon1
+      - LOG_LEVEL=0
+      - PEER_MONITOR_HOST=mon1
+      - ETCD_URL=http://etcd0:2379
 
   mon3:
-    image: flaviostutz/ceph-monitor:latest
+    build: flaviostutz/ceph-monitor
     environment:
-      - LOG_LEVEL=10
-      - JOIN_MONITOR_HOST=mon2
+      - LOG_LEVEL=0
+      - PEER_MONITOR_HOST=mon2
+      - ETCD_URL=http://etcd0:2379
+
+volumes:
+  etcd0:
 
 ```
 

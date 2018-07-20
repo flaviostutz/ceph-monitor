@@ -25,17 +25,19 @@ if [ ! -f $MONITOR_DATA_PATH/initialized ]; then
     ceph-authtool --create-keyring /tmp/keyring --gen-key -n mon. --cap mon 'allow *'
     ceph-authtool /tmp/keyring --gen-key -n client.admin --set-uid=0 --cap mon 'allow *' --cap osd 'allow *' --cap mds 'allow' --cap mgr 'allow'
 
-    echo "Sending keys to ETCD..."
-    while true; do
-        etcdctl --endpoints $ETCD_URL ls / && break
-        echo "Retrying to connect to etcd at $ETCD_URL..."
-        sleep 1
-    done
-    set +e
-    etcdctl --endpoints $ETCD_URL mkdir $CLUSTER_NAME
-    set -e
-    KEYRING=$(cat /tmp/keyring | base64)
-    etcdctl --endpoints $ETCD_URL set "/$CLUSTER_NAME/keyring" "${KEYRING}"
+    if [ ! "${ETCD_URL}" == "" ]; then
+        echo "Sending keys to ETCD..."
+        while true; do
+            etcdctl --endpoints $ETCD_URL ls / && break
+            echo "Retrying to connect to etcd at $ETCD_URL..."
+            sleep 1
+        done
+        set +e
+        etcdctl --endpoints $ETCD_URL mkdir $CLUSTER_NAME
+        set -e
+        KEYRING=$(cat /tmp/keyring | base64)
+        etcdctl --endpoints $ETCD_URL set "/$CLUSTER_NAME/keyring" "${KEYRING}"
+    fi
 
     echo "Creating CRUSH map..."
     if [ "$FS_ID" == "" ]; then

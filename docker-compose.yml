@@ -11,24 +11,32 @@ services:
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd0:2379
 
+  mon-single:
+    build: .
+    environment:
+      - LOG_LEVEL=0
+
   mon1:
     build: .
     ports:
       - 6789:6789
     environment:
       - LOG_LEVEL=0
+      - ETCD_URL=http://etcd0:2379
 
   mon2:
     build: .
     environment:
       - LOG_LEVEL=0
       - PEER_MONITOR_HOST=mon1
+      - ETCD_URL=http://etcd0:2379
 
   mon3:
     build: .
     environment:
       - LOG_LEVEL=0
       - PEER_MONITOR_HOST=mon2
+      - ETCD_URL=http://etcd0:2379
 
 volumes:
   etcd0:
