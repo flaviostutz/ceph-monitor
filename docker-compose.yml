@@ -28,7 +28,7 @@ services:
       - PEER_MONITOR_HOST=mon1
       - ETCD_URL=http://etcd0:2379
     volumes:
-      - mon1:/var/lib/ceph/mon
+      - mon2:/var/lib/ceph/mon
 
   mon3:
     build: .
@@ -37,7 +37,7 @@ services:
       - PEER_MONITOR_HOST=mon2
       - ETCD_URL=http://etcd0:2379
     volumes:
-      - mon1:/var/lib/ceph/mon
+      - mon3:/var/lib/ceph/mon
 
 volumes:
   etcd0:
