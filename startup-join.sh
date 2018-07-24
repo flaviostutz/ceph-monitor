@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-set -x
+# set -x
 
 echo ">>>> JOINING THIS MONITOR TO AN EXISTING CLUSTER..."
 
@@ -17,15 +17,14 @@ if [ ! -f $MONITOR_DATA_PATH/initialized ]; then
     set -e
     
     ceph-mon --mkfs --monmap /tmp/monmap --debug_mon $LOG_LEVEL --id=$MONITOR_NAME --cluster $CLUSTER_NAME --mon-data $MONITOR_DATA_PATH --keyring /etc/ceph/keyring
-    cp /etc/ceph/keyring $MONITOR_DATA_PATH/keyring
 
     touch $MONITOR_DATA_PATH/initialized
 else
     echo ">>> Monitor already initialized before. Reusing state."
 fi
 
-cp $MONITOR_DATA_PATH/keyring /etc/ceph/keyring
-
+echo "KEYRING:"
+cat /etc/ceph/keyring
 echo ""
 echo "Starting Ceph Monitor $CLUSTER_NAME-$MONITOR_NAME..."
-ceph-mon -d --public_addr ${MONITOR_IP}:${MONITOR_PORT} --debug_mon $LOG_LEVEL --mon-data ${MONITOR_DATA_PATH} --id $MONITOR_NAME --cluster $CLUSTER_NAME --keyring $MONITOR_DATA_PATH/keyring
+ceph-mon -d --public_addr ${MONITOR_IP}:${MONITOR_PORT} --debug_mon $LOG_LEVEL --mon-data ${MONITOR_DATA_PATH} --id $MONITOR_NAME --cluster $CLUSTER_NAME --keyring /etc/ceph/keyring

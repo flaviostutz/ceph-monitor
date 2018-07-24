@@ -9,6 +9,7 @@ ENV MONITOR_IP ''
 ENV MONITOR_PORT 6789
 ENV ETCD_URL ''
 ENV CREATE_CLUSTER_IF_PEER_DOWN 'false'
+ENV LOG_LEVEL 0
 
 ADD startup.sh /
 ADD startup-bootstrap.sh /

@@ -1,6 +1,12 @@
 # ceph-monitor
 Docker image for running a Ceph Monitor daemon
 
+ETCD is used by different the instances so they can exchange the keyring. The first container to bootstrap the cluster will set the key and the others will retrieve the keyring from ETCD so they can connect to the peer monitor and and retrieve the monmap and join the cluster.
+
+When container hostname or ip gets changed, another monitor instance will be joined to the cluster, as described in http://docs.ceph.com/docs/master/rados/operations/add-or-rm-mons/
+
+The usage of volumes is not required, but may help you in case you need a hard recovery so it is recommended in production.
+
 # Usage
 
 docker-compose.yml for a single monitor configuration
@@ -12,9 +18,8 @@ services:
 
   mon1:
     image: flaviostutz/ceph-monitor
-    environment:
-        - LOG_LEVEL=5
-
+    ports:
+      - 6789
 ```
 
 docker-compose.yml for HA configuration
@@ -40,6 +45,8 @@ services:
     environment:
       - LOG_LEVEL=0
       - ETCD_URL=http://etcd0:2379
+    volumes:
+      - mon1:/var/lib/ceph/mon
 
   mon2:
     build: flaviostutz/ceph-monitor
@@ -47,6 +54,8 @@ services:
       - LOG_LEVEL=0
       - PEER_MONITOR_HOST=mon1
       - ETCD_URL=http://etcd0:2379
+    volumes:
+      - mon2:/var/lib/ceph/mon
 
   mon3:
     build: flaviostutz/ceph-monitor
@@ -54,9 +63,14 @@ services:
       - LOG_LEVEL=0
       - PEER_MONITOR_HOST=mon2
       - ETCD_URL=http://etcd0:2379
+    volumes:
+      - mon3:/var/lib/ceph/mon
 
 volumes:
   etcd0:
+  mon1:
+  mon2:
+  mon3:
 
 ```
 
@@ -71,17 +85,10 @@ http://docs.ceph.com/docs/master/rados/configuration/mon-config-ref/
 ```
 ENV CLUSTER_NAME 'ceph'
 ENV FS_ID '' # defaults to hostname
-ENV MONITOR_NAME '' # defaults to hostname
 ENV MONITOR_HOST '' # defaults to hostname
 ENV MONITOR_IP '' # defaults to local ip
+ENV MONITOR_NAME '' # defaults to hostname + ip + port
 ENV MONITOR_PORT 6789
-ENV OSD_JOURNAL_SIZE 1024
-ENV OSD_POOL_DEFAULT_SIZE 3
-ENV OSD_POOL_DEFAULT_MIN_SIZE 2
-ENV OSD_POOL_DEFAULT_PG_NUM 333
-ENV OSD_CRUSH_CHOOSELEAF_TYPE 1
 ENV LOG_LEVEL 3
 ```
 
-### Attention
-* The image doesn't support cephx authentication (yet)

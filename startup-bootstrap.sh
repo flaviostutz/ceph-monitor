@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-set -x
+# set -x
 
 echo ">>>> PREPARING AND BOOTSTRAPING THIS MONITOR FOR A NEW CLUSTER..."
 
@@ -41,16 +41,15 @@ if [ ! -f $MONITOR_DATA_PATH/initialized ]; then
     fi
     monmaptool --create --add $MONITOR_NAME ${MONITOR_IP}:${MONITOR_PORT} --fsid ${FS_ID} /tmp/monmap
     ceph-mon --mkfs --mon-data $MONITOR_DATA_PATH --monmap /tmp/monmap --debug_mon $LOG_LEVEL --id $MONITOR_NAME --cluster $CLUSTER_NAME --keyring /etc/ceph/keyring
-    cp /etc/ceph/keyring $MONITOR_DATA_PATH/keyring
     
     touch $MONITOR_DATA_PATH/initialized
 else
     echo ">>> Monitor already initialized before. Reusing state."
 fi
 
-cp $MONITOR_DATA_PATH/keyring /etc/ceph/keyring
-
+echo "KEYRING:"
+cat /etc/ceph/keyring
 echo ""
 echo "Starting Ceph Monitor $CLUSTER_NAME-$MONITOR_NAME..."
-ceph-mon -d --debug_mon $LOG_LEVEL --mon-data $MONITOR_DATA_PATH --id $MONITOR_NAME --cluster $CLUSTER_NAME --keyring $MONITOR_DATA_PATH/keyring
+ceph-mon -d --debug_mon $LOG_LEVEL --mon-data $MONITOR_DATA_PATH --id $MONITOR_NAME --cluster $CLUSTER_NAME --keyring /etc/ceph/keyring
 

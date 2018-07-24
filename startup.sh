@@ -39,7 +39,6 @@ resolveKeyring() {
         if [ $? -eq 0 ]; then
             echo $KEYRING > /tmp/base64keyring
             base64 -d -i /tmp/base64keyring > /etc/ceph/keyring
-            cat /etc/ceph/keyring
             return 0
         else
             return 2
@@ -50,7 +49,11 @@ resolveKeyring() {
     fi
 }
 
-if [ "$CREATE_CLUSTER_IF_PEER_DOWN" == "true" ]; then
+if [ "$PEER_MONITOR_HOST" == "" ]; then
+    echo "No peer configured."
+    ./startup-bootstrap.sh
+
+elif [ "$CREATE_CLUSTER_IF_PEER_DOWN" == "true" ]; then
     for i in `seq 1 5`; do
         set +e
         echo "Downloading keys from etcd..."
