@@ -12,7 +12,7 @@ if [ ! -f $MONITOR_DATA_PATH/initialized ]; then
     echo ""
     #http://docs.ceph.com/docs/master/rados/configuration/auth-config-ref/
     ceph-authtool --create-keyring /etc/ceph/keyring --gen-key -n mon. --cap mon 'allow *'
-    ceph-authtool /etc/ceph/keyring --gen-key -n client.admin --set-uid=0 --cap mon 'allow *' --cap osd 'allow *' --cap mds 'allow' --cap mgr 'allow'
+    ceph-authtool /etc/ceph/keyring --gen-key -n client.admin --set-uid=0 --cap mon 'allow *' --cap osd 'allow *' --cap mds 'allow *' --cap mgr 'allow *'
 
     if [ ! "${ETCD_URL}" == "" ]; then
         echo "Sending keys to ETCD..."
