@@ -59,7 +59,7 @@ elif [ "$CREATE_CLUSTER_IF_PEER_DOWN" == "true" ]; then
         echo "Downloading keys from etcd..."
         resolveKeyring
         echo "Trying to contact another peer..."
-        ceph mon getmap -o /tmp/monmap --connect-timeout 1000
+        ceph mon getmap -o /tmp/monmap --connect-timeout 1
         if [ $? -eq 0 ]; then
             set -e
             echo "Could contact peer. Joining it."
