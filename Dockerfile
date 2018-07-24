@@ -8,12 +8,12 @@ ENV MONITOR_HOST ''
 ENV MONITOR_IP ''
 ENV MONITOR_PORT 6789
 ENV ETCD_URL ''
+ENV CREATE_CLUSTER_IF_PEER_DOWN 'false'
 
 ADD startup.sh /
 ADD startup-bootstrap.sh /
 ADD startup-join.sh /
-ADD ceph-bootstrap.conf.template /
-ADD ceph-join.conf.template /
+ADD ceph.conf.template /
 
 EXPOSE 6789
 

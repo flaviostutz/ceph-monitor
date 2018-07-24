@@ -17,6 +17,8 @@ services:
       - 6789:6789
     environment:
       - LOG_LEVEL=0
+      - PEER_MONITOR_HOST=mon2
+      - CREATE_CLUSTER_IF_PEER_DOWN=true
       - ETCD_URL=http://etcd0:2379
     volumes:
       - mon1:/var/lib/ceph/mon
