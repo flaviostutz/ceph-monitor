@@ -9,7 +9,7 @@ The usage of volumes is not required, but may help you in case you need a hard r
 
 # Usage
 
-docker-compose.yml for a single monitor configuration
+docker-compose.yml for a single monitor configuration. After bootstrap, get the keyring file in container logs so that you can connect another services to this monitor (OSD, MGR etc)
 
 ```
 version: '3.5'
