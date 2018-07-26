@@ -45,6 +45,7 @@ services:
     environment:
       - LOG_LEVEL=0
       - CREATE_CLUSTER=true
+      - PEER_MONITOR_HOST=mon2
       - ETCD_URL=http://etcd0:2379
     volumes:
       - mon1:/var/lib/ceph/mon
