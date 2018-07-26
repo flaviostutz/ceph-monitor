@@ -18,6 +18,7 @@ services:
     environment:
       - LOG_LEVEL=0
       - PEER_MONITOR_HOST=mon2
+      - CREATE_CLUSTER=true
       - CREATE_CLUSTER_IF_PEER_DOWN=true
       - ETCD_URL=http://etcd0:2379
     volumes:

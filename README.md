@@ -92,3 +92,5 @@ ENV MONITOR_PORT 6789
 ENV LOG_LEVEL 3
 ```
 
+### Bugs
+docker-compose up, then docker-compose down, then docker-compose up again raises an error sometimes!
