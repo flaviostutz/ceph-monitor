@@ -2,9 +2,25 @@
 set -e
 # set -x
 
+echo "CLUSTER_NAME=$CLUSTER_NAME; PEER_MONITOR_HOST=$PEER_MONITOR_HOST; CREATE_CLUSTER=$CREATE_CLUSTER; ETCD_URL=$ETCD_URL"
+
 if [ "$CLUSTER_NAME" == "" ]; then
     echo "CLUSTER_NAME cannot be empty"
     exit 1
+fi
+
+if [ "$PEER_MONITOR_HOST" == "" ]; then
+    if [ ! "$CREATE_CLUSTER" == "true" ]; then
+        echo "Either PEER_MONITOR_HOST must be defined or CREATE_CLUSTER must be true"
+        exit 2
+    fi
+else
+    if [ ! "$CREATE_CLUSTER" == "true" ]; then
+        if [ "$ETCD_URL" == "" ]; then
+            echo "You specified a PEER_MONITOR_HOST but no ETCD_URL to retrieve keys and this instance is not meant to create a cluster (CREATE_CLUSTER is not true)"
+            exit 3
+        fi
+    fi
 fi
 
 if [ "$MONITOR_IP" == "" ]; then
@@ -42,7 +58,7 @@ resolveKeyring() {
             echo "Key retrieved from etcd successfuly"
             return 0
         elif [ $? -eq 1 ]; then 
-            echo "Server contacted, by key doesn't exists"
+            echo "Etcd contacted, but key doesn't exists yet"
             return 2
         elif [ $? -eq 4 ]; then 
             echo "Couldn't contact server"
@@ -52,59 +68,41 @@ resolveKeyring() {
             return 9
         fi
     else
-        echo "Monitor key doesn't exist and ETCD was not defined. Cannot retrieve keys."
+        echo "Monitor key doesn't exist in this instance and ETCD was not defined. Cannot retrieve keys."
         return 1
     fi
 }
 
-if [ "$PEER_MONITOR_HOST" == "" ]; then
-    echo "No peer configured."
-    ./startup-bootstrap.sh
-
-elif [ "$CREATE_CLUSTER" == "true" ]; then
-    while true; do
-        set +e
-        resolveKeyring
-        if [ $? -eq 0 ]; then
-            for i in `seq 1 ${PEER_CONNECT_TIMEOUT}`; do
-                echo "Trying to contact another peer..."
-                ceph mon getmap -o /tmp/monmap --connect-timeout 1
-                if [ $? -eq 0 ]; then
-                    set -e
-                    echo "Could contact peer. Joining it."
-                    ./startup-join.sh
-                else
-                    set -e
-                    if [ $i -eq ${PEER_CONNECT_TIMEOUT} ]; then
-                        if [ "$CREATE_CLUSTER_IF_PEER_DOWN" == "true" ]; then
-                            echo "Could not contact peer. Creating a new cluster."
-                            ./startup-bootstrap.sh
-                            break
-                        else
-                            echo "Cluster seems to be initialized before, but peer monitor could not be contacted. Exiting."
-                        fi
-                    else 
-                        echo "Retrying to connect to peer monitor ${PEER_MONITOR_HOST} in 1 second..."
-                        sleep 1
-                    fi
-                fi
-            done
-        elif [ $? -eq 2 ]; then
+while true; do
+    set +e
+    resolveKeyring
+    KR=$?
+    if [ $KR -eq 0 ]; then
+        ./startup-join.sh
+        break
+    elif [ $KR -eq 1 ]; then
+        #Monitor key doesn't exist in this instance and ETCD was not defined
+        if [ "$CREATE_CLUSTER" == "true" ]; then
             echo "Seems like cluster was not initialized before. Creating new cluster"
             ./startup-bootstrap.sh
             break
         else
-            echo "Retrying in 1s..."
-            sleep 1
+            echo "This instance is not meant to create a new cluster and no key can be retrieved. Aborting."
+            exit 5
         fi
-    done
-
-else
-    while true; do
-        resolveKeyring && break
+    elif [ $KR -eq 2 ]; then
+        #Etcd contacted, but key doesn't exists yet
+        if [ "$CREATE_CLUSTER" == "true" ]; then
+            echo "Seems like cluster was not initialized before. Creating new cluster"
+            ./startup-bootstrap.sh
+            break
+        else
+            #maybe another instance will create the keys soon (it will create the cluster)
+            echo "Retrying in 1s..."
+        fi
+    else
         echo "Retrying in 1s..."
         sleep 1
-    done
-    ./startup-join.sh
-fi
+    fi
+done
 

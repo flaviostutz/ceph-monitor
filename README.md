@@ -44,6 +44,7 @@ services:
       - 6789:6789
     environment:
       - LOG_LEVEL=0
+      - CREATE_CLUSTER=true
       - ETCD_URL=http://etcd0:2379
     volumes:
       - mon1:/var/lib/ceph/mon
@@ -61,7 +62,7 @@ services:
     build: flaviostutz/ceph-monitor
     environment:
       - LOG_LEVEL=0
-      - PEER_MONITOR_HOST=mon2
+      - PEER_MONITOR_HOST=mon1
       - ETCD_URL=http://etcd0:2379
     volumes:
       - mon3:/var/lib/ceph/mon
