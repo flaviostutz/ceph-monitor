@@ -55,6 +55,10 @@ resolveKeyring() {
         if [ $? -eq 0 ]; then
             echo $KEYRING > /tmp/base64keyring
             base64 -d -i /tmp/base64keyring > /etc/ceph/keyring
+            echo "Keyring in base64:"
+            echo "===="
+            cat /tmp/base64keyring
+            echo "===="
             echo "Key retrieved from etcd successfuly"
             return 0
         elif [ $? -eq 1 ]; then 

@@ -25,6 +25,15 @@ if [ ! -f $MONITOR_DATA_PATH/initialized ]; then
         etcdctl --endpoints $ETCD_URL mkdir $CLUSTER_NAME
         set -e
         KEYRING=$(cat /etc/ceph/keyring | base64)
+        echo "Keyring file:"
+        echo "===="
+        cat /etc/ceph/keyring
+        echo "===="
+        echo ""
+        echo "Keyring in base64:"
+        echo "===="
+        echo "$KEYRING"
+        echo "===="
         etcdctl --endpoints $ETCD_URL set "/$CLUSTER_NAME/keyring" "${KEYRING}"
     fi
 
