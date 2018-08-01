@@ -88,9 +88,9 @@ http://docs.ceph.com/docs/master/rados/configuration/mon-config-ref/
 ENV CLUSTER_NAME 'ceph'
 ENV FS_ID '' # defaults to hostname
 ENV MONITOR_HOST '' # defaults to hostname
-ENV MONITOR_IP '' # defaults to local ip
+ENV MONITOR_ADVERTISE_IP '' # defaults to local ip, but can be different if this is behind NAT or exposed by a port in the host
+ENV MONITOR_ADVERTISE_PORT 6789
 ENV MONITOR_NAME '' # defaults to hostname + ip + port
-ENV MONITOR_PORT 6789
 ENV LOG_LEVEL 3
 ```
 
