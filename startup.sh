@@ -28,10 +28,6 @@ if [ "$MONITOR_ADVERTISE_IP" == "" ]; then
     export MONITOR_ADVERTISE_IP=$LOCAL_IP
 fi
 echo "MONITOR_ADVERTISE_IP=$MONITOR_ADVERTISE_IP"
-
-if [ "$MONITOR_ADVERTISE_PORT" == "" ]; then
-    export MONITOR_ADVERTISE_PORT=6789
-fi
 echo "MONITOR_ADVERTISE_PORT=$MONITOR_ADVERTISE_PORT"
 
 if [ "$MONITOR_NAME" == "" ]; then
@@ -44,6 +40,12 @@ echo "MONITOR_DATA_PATH=${MONITOR_DATA_PATH}"
 
 echo "Creating ceph.conf..."
 cat /ceph.conf.template | envsubst > /etc/ceph/ceph.conf
+
+echo "" >> /etc/ceph/ceph.conf
+echo "[mon.$MONITOR_NAME]" >> /etc/ceph/ceph.conf
+echo "public addr = ${MONITOR_ADVERTISE_IP}:${MONITOR_ADVERTISE_PORT}" >> /etc/ceph/ceph.conf
+echo "public bind addr = ${LOCAL_IP}:${MONITOR_BIND_PORT}" >> /etc/ceph/ceph.conf
+
 cat /etc/ceph/ceph.conf
 
 resolveKeyring() {

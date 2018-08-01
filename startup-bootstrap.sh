@@ -42,13 +42,7 @@ if [ ! -f $MONITOR_DATA_PATH/initialized ]; then
         export FS_ID=$(uuidgen)
         echo "FS_ID=$FS_ID"
     fi
-    if [ "$MONITOR_IP" == "" ]; then
-        export MONITOR_IP=$(ip route get 8.8.8.8 | grep -oE 'src ([0-9\.]+)' | cut -d ' ' -f 2)
-    fi
-    if [ "$MONITOR_PORT" == "" ]; then
-        export MONITOR_PORT=6789
-    fi
-    monmaptool --create --add $MONITOR_NAME ${MONITOR_IP}:${MONITOR_PORT} --clobber --fsid ${FS_ID} /tmp/monmap
+    monmaptool --create --add $MONITOR_NAME ${MONITOR_ADVERTISE_IP}:${MONITOR_ADVERTISE_PORT} --clobber --fsid ${FS_ID} /tmp/monmap
     ceph-mon --mkfs --mon-data $MONITOR_DATA_PATH --monmap /tmp/monmap --debug_mon $LOG_LEVEL --id $MONITOR_NAME --cluster $CLUSTER_NAME --keyring /etc/ceph/keyring
     
     touch $MONITOR_DATA_PATH/initialized
