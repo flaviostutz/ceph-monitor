@@ -23,18 +23,19 @@ else
     fi
 fi
 
-if [ "$MONITOR_IP" == "" ]; then
-    export MONITOR_IP=$(ip route get 8.8.8.8 | grep -oE 'src ([0-9\.]+)' | cut -d ' ' -f 2)
+export LOCAL_IP=$(ip route get 8.8.8.8 | grep -oE 'src ([0-9\.]+)' | cut -d ' ' -f 2)
+if [ "$MONITOR_ADVERTISE_IP" == "" ]; then
+    export MONITOR_ADVERTISE_IP=$LOCAL_IP
 fi
-echo "MONITOR_IP=$MONITOR_IP"
+echo "MONITOR_ADVERTISE_IP=$MONITOR_ADVERTISE_IP"
 
-if [ "$MONITOR_PORT" == "" ]; then
-    export MONITOR_PORT=6789
+if [ "$MONITOR_ADVERTISE_PORT" == "" ]; then
+    export MONITOR_ADVERTISE_PORT=6789
 fi
-echo "MONITOR_PORT=$MONITOR_PORT"
+echo "MONITOR_ADVERTISE_PORT=$MONITOR_ADVERTISE_PORT"
 
 if [ "$MONITOR_NAME" == "" ]; then
-    export MONITOR_NAME=$(hostname):$MONITOR_IP:${MONITOR_PORT}
+    export MONITOR_NAME=$(hostname):$MONITOR_ADVERTISE_IP:${MONITOR_ADVERTISE_PORT}
 fi
 echo "MONITOR_NAME=$MONITOR_NAME"
 
@@ -103,6 +104,7 @@ while true; do
         else
             #maybe another instance will create the keys soon (it will create the cluster)
             echo "Retrying in 1s..."
+            sleep 1
         fi
     else
         echo "Retrying in 1s..."

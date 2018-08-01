@@ -8,39 +8,38 @@ services:
     environment:
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd0:2379
-    # volumes:
-    #   - etcd0:/etcd_data
 
   mon1:
     build: .
+    ports:
+      - 16789:6789
     environment:
       - LOG_LEVEL=0
       - CREATE_CLUSTER=true
       - PEER_MONITOR_HOST=mon2
       - ETCD_URL=http://etcd0:2379
-    # volumes:
-    #   - mon1:/var/lib/ceph/mon
+      - MONITOR_ADVERTISE_IP=${HOST_IP}
+      - MONITOR_ADVERTISE_PORT=16789
 
   mon2:
     build: .
+    ports:
+      - 26789:6789
     environment:
       - LOG_LEVEL=0
       - PEER_MONITOR_HOST=mon1
       - ETCD_URL=http://etcd0:2379
-    # volumes:
-    #   - mon2:/var/lib/ceph/mon
+      - MONITOR_ADVERTISE_IP=${HOST_IP}
+      - MONITOR_ADVERTISE_PORT=26789
 
   mon3:
     build: .
+    ports:
+      - 16789:6789
     environment:
       - LOG_LEVEL=0
       - PEER_MONITOR_HOST=mon1
       - ETCD_URL=http://etcd0:2379
-    # volumes:
-    #   - mon3:/var/lib/ceph/mon
+      - MONITOR_ADVERTISE_IP=${HOST_IP}
+      - MONITOR_ADVERTISE_PORT=36789
 
-# volumes:
-#   etcd0:
-#   mon1:
-#   mon2:
-#   mon3:

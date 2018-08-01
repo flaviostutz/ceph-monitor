@@ -25,6 +25,12 @@ fi
 
 echo "KEYRING:"
 cat /etc/ceph/keyring
+
+echo "" >> /etc/ceph/ceph.conf
+echo "[mon.$MONITOR_NAME]" >> /etc/ceph/ceph.conf
+echo "public addr = ${MONITOR_ADVERTISE_IP}:${MONITOR_ADVERTISE_PORT}" >> /etc/ceph/ceph.conf
+echo "public bind addr = ${LOCAL_IP}:6789" >> /etc/ceph/ceph.conf
+
 echo ""
 echo "Starting Ceph Monitor $CLUSTER_NAME-$MONITOR_NAME..."
-ceph-mon -d --public_addr ${MONITOR_IP}:${MONITOR_PORT} --debug_mon $LOG_LEVEL --mon-data ${MONITOR_DATA_PATH} --id $MONITOR_NAME --cluster $CLUSTER_NAME --keyring /etc/ceph/keyring
+ceph-mon -d --debug_mon $LOG_LEVEL --mon-data ${MONITOR_DATA_PATH} --id $MONITOR_NAME --cluster $CLUSTER_NAME --keyring /etc/ceph/keyring
