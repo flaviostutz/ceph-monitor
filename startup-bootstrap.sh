@@ -42,7 +42,7 @@ if [ ! -f $MONITOR_DATA_PATH/initialized ]; then
         export FS_ID=$(uuidgen)
         echo "FS_ID=$FS_ID"
     fi
-    monmaptool --create --add $MONITOR_NAME ${MONITOR_ADVERTISE_IP}:${MONITOR_ADVERTISE_PORT} --clobber --fsid ${FS_ID} /tmp/monmap
+    monmaptool --create --add $MONITOR_NAME ${MONITOR_ADVERTISE_ADDRESS} --clobber --fsid ${FS_ID} /tmp/monmap
     ceph-mon --mkfs --mon-data $MONITOR_DATA_PATH --monmap /tmp/monmap --debug_mon $LOG_LEVEL --id $MONITOR_NAME --cluster $CLUSTER_NAME --keyring /etc/ceph/keyring
     
     touch $MONITOR_DATA_PATH/initialized

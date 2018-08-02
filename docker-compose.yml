@@ -2,45 +2,27 @@ version: '3.5'
 
 services:
 
-  #etcd is used only to exchange client.admin key between monitor instances
   etcd0:
     image: quay.io/coreos/etcd
     environment:
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd0:2379
-    # volumes:
-    #   - etcd0:/etcd_data
 
   mon1:
     build: .
     environment:
-      - LOG_LEVEL=0
       - CREATE_CLUSTER=true
-      - PEER_MONITOR_HOST=mon2
       - ETCD_URL=http://etcd0:2379
-    # volumes:
-    #   - mon1:/var/lib/ceph/mon
 
   mon2:
     build: .
     environment:
-      - LOG_LEVEL=0
-      - PEER_MONITOR_HOST=mon1
+      - PEER_MONITOR_HOSTS=mon1
       - ETCD_URL=http://etcd0:2379
-    # volumes:
-    #   - mon2:/var/lib/ceph/mon
 
   mon3:
     build: .
     environment:
-      - LOG_LEVEL=0
-      - PEER_MONITOR_HOST=mon1
+      - PEER_MONITOR_HOSTS=mon1
       - ETCD_URL=http://etcd0:2379
-    # volumes:
-    #   - mon3:/var/lib/ceph/mon
 
-# volumes:
-#   etcd0:
-#   mon1:
-#   mon2:
-#   mon3:

@@ -1,0 +1,56 @@
+version: '3.5'
+
+services:
+
+  #etcd is used only to exchange client.admin key between monitor instances
+  etcd0:
+    image: quay.io/coreos/etcd
+    ports:
+      - 12379:12379
+    environment:
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://${HOST_IP}:12379
+    # volumes:
+    #   - etcd0:/etcd_data
+
+  mon1:
+    build: .
+    network_mode: host
+    environment:
+      - LOG_LEVEL=0
+      - CREATE_CLUSTER=true
+      - MONITOR_ADVERTISE_ADDRESS=${HOST_IP}:16789
+      - MONITOR_BIND_PORT=16789
+      - ETCD_URL=http://${HOST_IP}:12379
+    # volumes:
+    #   - mon1:/var/lib/ceph/mon
+
+  mon2:
+    build: .
+    network_mode: host
+    environment:
+      - LOG_LEVEL=0
+      - PEER_MONITOR_ADDRESSES=${HOST_IP}:16789
+      - MONITOR_ADVERTISE_ADDRESS=${HOST_IP}:26789
+      - MONITOR_BIND_PORT=16789
+      - ETCD_URL=http://${HOST_IP}:12379
+    # volumes:
+    #   - mon2:/var/lib/ceph/mon
+
+  mon3:
+    build: .
+    network_mode: host
+    environment:
+      - LOG_LEVEL=0
+      - PEER_MONITOR_HOSTS=${HOST_IP}:16789
+      - MONITOR_ADVERTISE_ADDRESS=${HOST_IP}:36789
+      - MONITOR_BIND_PORT=16789
+      - ETCD_URL=http://${HOST_IP}:12379
+    # volumes:
+    #   - mon3:/var/lib/ceph/mon
+
+# volumes:
+#   etcd0:
+#   mon1:
+#   mon2:
+#   mon3:

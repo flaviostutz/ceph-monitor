@@ -2,6 +2,11 @@
 set -e
 # set -x
 
+if [ "$PEER_MONITOR_HOSTS" == "" ] && [ "$PEER_MONITOR_ADDRESSES" == "" ]; then
+    echo "Either PEER_MONITOR_HOSTS or PEER_MONITOR_ADDRESSES must be defined in order to join an existing cluster. Exiting."
+    exit 3
+fi
+
 echo ">>>> JOINING THIS MONITOR TO AN EXISTING CLUSTER..."
 
 if [ ! -f $MONITOR_DATA_PATH/initialized ]; then 
@@ -9,9 +14,9 @@ if [ ! -f $MONITOR_DATA_PATH/initialized ]; then
     mkdir -p $MONITOR_DATA_PATH
 
     while true; do
-        echo "Retrieving CRUSH map from ${PEER_MONITOR_HOST}..."
-        ceph mon getmap -o /tmp/monmap --keyring /etc/ceph/keyring && break
-        echo "Retrying to connect to peer monitor ${PEER_MONITOR_HOST} in 1 second..."
+        echo "Retrieving CRUSH map from ${PEER_MONITOR_HOSTS} ${PEER_MONITOR_ADDRESSES}..."
+        ceph mon getmap -o /tmp/monmap --keyring /etc/ceph/keyring --connect-timeout 1000 && break
+        echo "Retrying to connect to peers in 1 second..."
         sleep 1
     done
     set -e

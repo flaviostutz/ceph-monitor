@@ -45,7 +45,7 @@ services:
     environment:
       - LOG_LEVEL=0
       - CREATE_CLUSTER=true
-      - PEER_MONITOR_HOST=mon2
+      - PEER_MONITOR_HOSTS=mon2
       - ETCD_URL=http://etcd0:2379
     volumes:
       - mon1:/var/lib/ceph/mon
@@ -54,7 +54,7 @@ services:
     build: flaviostutz/ceph-monitor
     environment:
       - LOG_LEVEL=0
-      - PEER_MONITOR_HOST=mon1
+      - PEER_MONITOR_HOSTS=mon1
       - ETCD_URL=http://etcd0:2379
     volumes:
       - mon2:/var/lib/ceph/mon
@@ -63,7 +63,7 @@ services:
     build: flaviostutz/ceph-monitor
     environment:
       - LOG_LEVEL=0
-      - PEER_MONITOR_HOST=mon1
+      - PEER_MONITOR_HOSTS=mon1
       - ETCD_URL=http://etcd0:2379
     volumes:
       - mon3:/var/lib/ceph/mon
