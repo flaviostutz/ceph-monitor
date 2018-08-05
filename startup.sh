@@ -52,7 +52,7 @@ fi
 echo "" >> /etc/ceph/ceph.conf
 echo "[mon.$MONITOR_NAME]" >> /etc/ceph/ceph.conf
 echo "public addr = ${MONITOR_ADVERTISE_ADDRESS}" >> /etc/ceph/ceph.conf
-echo "public bind addr = ${LOCAL_IP}:${MONITOR_BIND_PORT}" >> /etc/ceph/ceph.conf
+echo "public bind addr = 0.0.0.0:${MONITOR_BIND_PORT}" >> /etc/ceph/ceph.conf
 
 cat /etc/ceph/ceph.conf
 
