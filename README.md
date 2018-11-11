@@ -11,6 +11,8 @@ The usage of volumes is not required, but may help you in case you need a hard r
 
 docker-compose.yml for a single monitor configuration. After bootstrap, get the keyring file in container logs so that you can connect another services to this monitor (OSD, MGR etc)
 
+For more complete scenarios, visit http://github.com/flaviostutz/ceph-demos
+
 ```
 version: '3.5'
 
@@ -31,7 +33,7 @@ services:
 
   #etcd is used only to exchange client.admin key between monitor instances
   etcd0:
-    image: quay.io/coreos/etcd
+    image: quay.io/coreos/etcd:v3.2.25
     volumes:
       - etcd0:/etcd_data
     environment:
