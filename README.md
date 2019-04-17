@@ -13,7 +13,7 @@ docker-compose.yml for a single monitor configuration. After bootstrap, get the 
 
 For more complete scenarios, visit http://github.com/flaviostutz/ceph-demos
 
-```
+```yml
 version: '3.5'
 
 services:
@@ -26,7 +26,7 @@ services:
 
 docker-compose.yml for HA configuration
 
-```
+```yml
 version: '3.5'
 
 services:
@@ -89,7 +89,6 @@ http://docs.ceph.com/docs/master/rados/configuration/mon-config-ref/
 ```
 ENV CLUSTER_NAME 'ceph'
 ENV FS_ID '' # defaults to hostname
-ENV MONITOR_HOST '' # defaults to hostname
 ENV MONITOR_ADVERTISE_IP '' # defaults to local ip, but can be different if this is behind NAT or exposed by a port in the host
 ENV MONITOR_ADVERTISE_PORT 6789
 ENV MONITOR_NAME '' # defaults to hostname + ip + port

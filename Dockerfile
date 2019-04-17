@@ -1,11 +1,10 @@
-FROM flaviostutz/ceph-base:ubuntu-mimic-13.2.0.3
+FROM flaviostutz/ceph-base:13.2.5
 
 ENV CLUSTER_NAME 'ceph'
 ENV PEER_MONITOR_HOSTS ''
 ENV PEER_MONITOR_ADDRESSES ''
 ENV FS_ID ''
 ENV MONITOR_NAME ''
-ENV MONITOR_HOST ''
 ENV MONITOR_ADVERTISE_IP ''
 ENV MONITOR_ADVERTISE_PORT 6789
 #0.0.0.0 is important because the kernel was hanging when using IP explicitly
