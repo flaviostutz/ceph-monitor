@@ -7,6 +7,8 @@ When container hostname or ip gets changed, another monitor instance will be joi
 
 The usage of volumes is not required, but may help you in case you need a hard recovery so it is recommended in production.
 
+Attention: You need to run this daemon in a machine running Kernel >= 4.5.2
+
 # Usage
 
 docker-compose.yml for a single monitor configuration. After bootstrap, get the keyring file in container logs so that you can connect another services to this monitor (OSD, MGR etc)
