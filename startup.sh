@@ -2,6 +2,13 @@
 set -e
 # set -x
 
+kv=$(uname -r)
+vc=$(semver compare $kv 4.5.2)
+if [ "$vc" == "-1" ]; then
+    echo "The Linux host kernel version must be greater or equal 4.5.2. current version=$kv"
+    exit 1
+fi
+
 echo "CLUSTER_NAME=$CLUSTER_NAME; PEER_MONITOR_HOST=$PEER_MONITOR_HOST; CREATE_CLUSTER=$CREATE_CLUSTER; ETCD_URL=$ETCD_URL"
 
 if [ "$CLUSTER_NAME" == "" ]; then
