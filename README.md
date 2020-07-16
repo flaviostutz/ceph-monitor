@@ -1,4 +1,7 @@
 # ceph-monitor
+
+[<img src="https://img.shields.io/docker/automated/flaviostutz/ceph-monitor"/>](https://hub.docker.com/r/flaviostutz/ceph-monitor)
+
 Docker image for running a Ceph Monitor daemon
 
 ETCD is used by different the instances so they can exchange the keyring. The first container to bootstrap the cluster will set the key and the others will retrieve the keyring from ETCD so they can connect to the peer monitor and and retrieve the monmap and join the cluster.
